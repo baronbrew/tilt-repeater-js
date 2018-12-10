@@ -42,33 +42,41 @@ scanCounter++;
 setTimeout(function () { NRF.setScan(); }, 110);
 }
 
-// Initialize settings
+// set power
 NRF.setTxPower(4);
-//start with fast search
-tiltInterval = setInterval(function (){ startScan(); }, 190);
-scanCounter = 2;
-color = 1;
-//enable watchdog timer, will reset chip if script hangs for more than 3 seconds
-E.enableWatchdog(4);
-var presses = 1;
-clearWatch(); // remove our last watch
+// intialize global variables
+var scanCounter = 0;
+var color = 0;
+var presses = 9;
+var tiltInterval;
+//enable watchdog timer
+E.enableWatchdog(5);
+// remove all watches
+clearWatch();
+//cleart intervals and timeouts
+clearInterval();
+clearTimeout();
 setWatch(function() {
   presses++;
-  color = presses;
-  scanCounter = 119;
-  var uuidValue = parseInt('0x' + color + '0');
-  NRF.setAdvertising(require("ble_ibeacon").get({ uuid : [0xa4, 0x95, 0xbb, uuidValue, 0xc5, 0xb1, 0x4b, 0x44, 0xb5, 0x12, 0x13, 0x70, 0xf0, 0x2d, 0x74, 0xde], major : 0, minor : 0, rssi : -59 }),{interval:500});
+  //conditional for presses past valid color (8)
   if (presses == 9){
     NRF.sleep();
-    digitalPulse(LED1, 1, 100);
+    clearInterval(tiltInterval);
+    digitalPulse(LED1, 1, 50);
+    return;
   }
   if (presses > 9){
     presses = 1;
     NRF.wake();
-    digitalPulse(LED2, 1, 100);
-  }else{
-      digitalPulse(LED2, 1, 10);
+    tiltInterval = setInterval(function (){ startScan(); }, 190);
+    digitalPulse(LED2, 1, 50);
+  }else if (presses < 9) {
+      digitalPulse(LED2, 1, 50);
   }
-  //console.log("Pressed "+presses);
-  
+  //jump to fast search
+  scanCounter = 120;
+  var uuidValue = parseInt('0x' + presses + '0');
+  //start advertising initial repeated color whith zeros for sg and temp values
+  NRF.setAdvertising(require("ble_ibeacon").get({ uuid : [0xa4, 0x95, 0xbb, uuidValue, 0xc5, 0xb1, 0x4b, 0x44, 0xb5, 0x12, 0x13, 0x70, 0xf0, 0x2d, 0x74, 0xde], major : 0, minor : 0, rssi : -59 }),{interval:500});
+  color = presses;
 }, BTN, { repeat: true, debounce : 50, edge: "rising" });
