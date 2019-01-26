@@ -22,7 +22,7 @@ var hexData = arrayBufferToHex(d.manufacturerData);
      var majorValue = '0x' + hexData[36] + hexData[37] + hexData[38] + hexData[39];
      var minorValue = '0x' + hexData[40] + hexData[41] + hexData[42] + hexData[43];
      var uuidValue = parseInt('0x' + color + hexData[11]);
-     NRF.setAdvertising(require("ble_ibeacon").get({ uuid : [0xa4, 0x95, 0xbb, uuidValue, 0xc5, 0xb1, 0x4b, 0x44, 0xb5, 0x12, 0x13, 0x70, 0xf0, 0x2d, 0x74, 0xde], major : majorValue, minor : minorValue, rssi : -59 }),{interval:2000});
+     NRF.setAdvertising(require("ble_ibeacon").get({ uuid : [0xa4, 0x95, 0xbb, uuidValue, 0xc5, 0xb1, 0x4b, 0x44, 0xb5, 0x12, 0x13, 0x70, 0xf0, 0x2d, 0x74, 0xde], major : majorValue, minor : minorValue, rssi : -59 }),{interval:1000});
      scanCounter = 0;
   }
 }
