@@ -1,4 +1,3 @@
-//espruino_repeater.js
 // Use "save on send" -> "direct to flash" in Web IDE settings
 // Needs 2v00 or above - preferably 2v01 or later
 
@@ -11,7 +10,7 @@ function startScan (){
     var hexData = arrayBufferToHex(d.manufacturerData);
     if (hexData.substr(8,4) == 'bb' + color + '0'){//matches key portion of iBeacon UUID for a Tilt
       changeInterval(tiltInterval, 980); //after finding a Tilt, scan for the next advertisement in 980ms. (assumes a 20ms processing time)
-      digitalPulse(LED2, 1, 3);//flash green LED to indicate a connection
+      //digitalPulse(LED2, 1, 3);//flash green LED to indicate a connection
       NRF.setScan();//stop scanning since tilt has been found
       //console.log(hexData);
       var majorValue = parseInt(hexData.substr(36,4),16);//set values to repeat
@@ -20,6 +19,18 @@ function startScan (){
       console.log(majorValue, minorValue, uuidValue);
       NRF.setAdvertising(require("ble_ibeacon").get({ uuid : [0xa4, 0x95, 0xbb, uuidValue, 0xc5, 0xb1, 0x4b, 0x44, 0xb5, 0x12, 0x13, 0x70, 0xf0, 0x2d, 0x74, 0xde], major : majorValue, minor : minorValue, rssi : -59 }),{interval:1000});
       scanCounter = 0;
+//display stuff for pixl
+var t = (minorValue/1000).toFixed(3);
+      // Clear display
+  g.clear();
+  // Use the small font for a title
+  g.setFontBitmap();
+  g.drawString("Specific Gravity:");
+  // Use a large font for the value itself
+  g.setFontVector(40);
+  g.drawString(t, (g.getWidth()-g.stringWidth(t))/2,10);
+  // Update the screen
+  g.flip();   
     }
   }, { filters: [{ manufacturerData: { 0x004C: {} } }] });
   //try to sync
@@ -54,7 +65,6 @@ clearWatch();
 //cleart intervals and timeouts
 clearInterval();
 clearTimeout();
-NRF.setAdvertising({},{});
 setWatch(function() {
   presses++;
   //conditional for presses past valid color (8)
@@ -68,9 +78,11 @@ setWatch(function() {
     presses = 1;//start over with presses (color)
     NRF.wake();
     tiltInterval = setInterval(function (){ startScan(); }, 190);//start with frequent scan
-    digitalPulse(LED2, 1, 50);
+    //digitalPulse(LED2, 1, 50);
+    console.log(presses);
   }else if (presses < 9) {
-      digitalPulse(LED2, 1, 50);
+      //digitalPulse(LED2, 1, 50);
+    console.log(presses);
   }
   //jump to fast search
   scanCounter = 120;//skip to 120 to maintain frequent scanning
