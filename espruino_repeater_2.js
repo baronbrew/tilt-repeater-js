@@ -59,6 +59,7 @@ function startScan (){
       var uuidValue = parseInt(color + hexData[11], 16);//convert tilt color to hex value for use in UUID
       console.log(majorValue, minorValue, uuidValue);
       NRF.setAdvertising(require("ble_ibeacon").get({ uuid : [0xa4, 0x95, 0xbb, uuidValue, 0xc5, 0xb1, 0x4b, 0x44, 0xb5, 0x12, 0x13, 0x70, 0xf0, 0x2d, 0x74, 0xde], major : majorValue, minor : minorValue, rssi : -59 }),{interval:1000});
+      cycleCount = 0;
       scanCounter = 0;
     }
   }, { filters: [{ manufacturerData: { 0x004C: {} } }] });
