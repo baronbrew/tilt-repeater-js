@@ -1,4 +1,4 @@
-//espruino_repeater_2.js
+//espruino_repeater_2.01.js
 // Use "save on send" -> "direct to flash" in Web IDE settings
 // Needs 2v00 or above - preferably 2v01 or later
 
